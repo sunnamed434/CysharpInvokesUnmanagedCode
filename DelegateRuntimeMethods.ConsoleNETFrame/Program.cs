@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static DelegateRuntimeMethods.ConsoleNETFrame.ExternalKernelCalls;
 
@@ -15,7 +13,7 @@ namespace DelegateRuntimeMethods.ConsoleNETFrame
             Console.WriteLine("press enter to load assembly");
             Console.ReadLine();
 
-            var handle = ExternalKernelCalls.LoadLibraryEx(file, 0, LoadLibraryFlags.NoFlags);
+            var handle = ExternalKernelCalls.LoadLibraryEx(file, 0, 0);
             if (handle == IntPtr.Zero)
             {
                 Console.WriteLine("Lib handle null: " + new Win32Exception().Message);
@@ -65,23 +63,11 @@ namespace DelegateRuntimeMethods.ConsoleNETFrame
         public static extern bool FreeLibrary(IntPtr hModule);
 
         [DllImport(Kernel32LibraryName, CharSet = CharSet.Ansi, SetLastError = true)]
-        public static extern IntPtr LoadLibraryEx(string fileName, int hFile, LoadLibraryFlags dwFlags);
+        public static extern IntPtr LoadLibraryEx(string fileName, int hFile, int flags);
 
         [DllImport(Kernel32LibraryName, SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
         private const string Kernel32LibraryName = "kernel32.dll";
-
-        [Flags]
-        public enum LoadLibraryFlags : uint
-        {
-            NoFlags = 0U,
-            DontResolveDllReferences = 1U,
-            LoadIgnoreCodeAuthzLevel = 16U,
-            LoadLibraryAsDatafile = 2U,
-            LoadLibraryAsDatafileExclusive = 64U,
-            LoadLibraryAsImageResource = 32U,
-            LoadWithAlteredSearchPath = 8U
-        }
     }
 }
